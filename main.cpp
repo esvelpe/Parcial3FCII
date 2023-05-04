@@ -43,12 +43,12 @@ double r(double x)
 int main()
 {
     double (*f[3])(double) = {p, q, r};
-    double w[10][2];
+    double w[11][2];
 
     LinearShooting(1.0, 2.0, 1.0, 2.0, 10, f, w);
 
-    cout << "x" << setw(8) << "y" << endl;
-    for (int i = 0; i < 10; i++)
+    cout << "# x" << setw(8) << "y" << endl;
+    for (int i = 0; i < 11; i++)
     {
         cout << w[i][0] << setw(8) << w[i][1] << endl;
     }

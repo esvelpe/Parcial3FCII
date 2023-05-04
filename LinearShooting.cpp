@@ -32,7 +32,7 @@ void LinearShooting(double a, double b, double alpha, double beta, int N, double
         x = a + i * h;
         w[i][0] = x;
 
-        // RK1
+        // RK1 para K
         k1_1 = h * u2[i - 1];
         k1_2 = h * (u2[i - 1] * (*f[0])(x) + u1[i - 1] * (*f[1])(x) + (*f[2])(x));
         // RK2
@@ -64,17 +64,15 @@ void LinearShooting(double a, double b, double alpha, double beta, int N, double
 
         // Redefinimos v
         v1[i] = v1[i - 1] + (kp1_1 + 2 * kp2_1 + 2 * kp3_1 + kp4_1) / 6.0;
-        cout << v1[i] << endl;
         v2[i] = v2[i - 1] + (kp1_2 + 2 * kp2_2 + 2 * kp3_2 + kp4_2) / 6.0;
     }
 
+    
     w1 = alpha;
     w2 = (beta - u1[N]) / v1[N];
-    cout << "ultimo valor del arreglo: " << v1[N] << endl;
-    cout << "valor de v1[N]" << v1[N] << endl;
 
-    for (int i = 1; i < N + 1; i++)
+    for (int i = 1; i < N+1; i++)
     {
-        w[i][1] = u1[i] + w2 * v2[i];
+        w[i][1] = u1[i] + w2 * v1[i];
     }
 }
