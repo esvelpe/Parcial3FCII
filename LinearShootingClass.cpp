@@ -8,9 +8,16 @@ LinearShooting::LinearShooting(double a, double b, double alpha, double beta, un
     *f = *g;
 
     w = new double*[2]; 
+
     w[0] = new double[N+1]; w[1] = new double[N+1]; //Inicializa cada una de las columnas con un array de N+1 entradas
-    u1[N] = {alpha}; u2[N] = {0.0};
-    v1[N] = {0.0}; v2[N] = {1.0};
+    
+    u1 = new double[N]; u1[0] = alpha; 
+    u2 = new double[N]; u2[0] = 0.0;
+
+    v1 = new double[N]; v1[0] = 0; 
+    v2 = new double[N]; v2[0] = 1.0;
+
+
 }
 
 double **LinearShooting::solutions()
@@ -26,7 +33,9 @@ double **LinearShooting::solutions()
 
             // RK1 para K
             k1_1 = h * u2[i - 1];
+
             k1_2 = h * (u2[i - 1] * (*f[0])(x) + u1[i - 1] * (*f[1])(x) + (*f[2])(x));
+            cout << "test" << endl;
             // RK2
             k2_1 = h * (u2[i - 1] + 0.5 * k1_2);
             k2_2 = h * ((*f[0])(x + 0.5 * h) * (u2[i - 1] + 0.5 * k1_2) + (*f[1])(x + 0.5 * h) * (u1[i - 1] + 0.5 * k1_1) + (*f[2])(x + 0.5 * h));
@@ -57,6 +66,7 @@ double **LinearShooting::solutions()
             // Redefinimos v
             v1[i] = v1[i - 1] + (kp1_1 + 2 * kp2_1 + 2 * kp3_1 + kp4_1) / 6.0;
             v2[i] = v2[i - 1] + (kp1_2 + 2 * kp2_2 + 2 * kp3_2 + kp4_2) / 6.0;
+
         }
 
     
