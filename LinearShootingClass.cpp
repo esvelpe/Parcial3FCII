@@ -5,23 +5,32 @@ LinearShooting::LinearShooting(double a, double b, double alpha, double beta, un
     this->a = a; this->b = b;
     this->alpha = alpha; this->beta = beta;
     this->N = N; this->h = (b - a) / (double)N;
+
+    //Inicializa las funciones P, Q y R
     f[0] = g[0];
     f[1] = g[1];
     f[2] = g[2];
 
-    w = new double*[2]; 
-
-    w[0] = new double[N+1]; w[1] = new double[N+1]; //Inicializa cada una de las columnas con un array de N+1 entradas
+    //Inicializa cada una de las columnas con un array de N+1 entradas
+    w = new double*[2];
+    w[0] = new double[N+1]; w[1] = new double[N+1]; 
     
+    //Inicializa los vectores u1, u2, v1, v2
     u1 = new double[N]; u1[0] = alpha; 
     u2 = new double[N]; u2[0] = 0.0;
 
     v1 = new double[N]; v1[0] = 0; 
     v2 = new double[N]; v2[0] = 1.0;
 
-
 }
 
+LinearShooting::~LinearShooting(){
+    delete[] w[0]; delete[] w[1]; delete[] w;
+    delete[] u1; delete[] u2;
+    delete[] v1; delete[] v2;
+}
+
+//Doble puntero porque retorna un arreglo de arreglos (Matriz)
 double **LinearShooting::solutions()
 {
 

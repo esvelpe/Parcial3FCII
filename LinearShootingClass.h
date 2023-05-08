@@ -8,6 +8,7 @@ class LinearShooting{
     public:
     
     LinearShooting(double , double , double , double , unsigned int , double (**)(double));
+    ~LinearShooting();
     double ** solutions();
 
     private:
