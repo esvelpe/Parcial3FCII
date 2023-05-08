@@ -5,7 +5,9 @@ LinearShooting::LinearShooting(double a, double b, double alpha, double beta, un
     this->a = a; this->b = b;
     this->alpha = alpha; this->beta = beta;
     this->N = N; this->h = (b - a) / (double)N;
-    *f = *g;
+    f[0] = g[0];
+    f[1] = g[1];
+    f[2] = g[2];
 
     w = new double*[2]; 
 
@@ -24,18 +26,19 @@ double **LinearShooting::solutions()
 {
 
     w[0][0] = a;
-    w[0][1] = alpha;
+    w[1][0] = alpha;
 
         for (int i = 1; i < N + 1; i++)
         {
+
             x = a + i * h;
-            w[i][0] = x;
+            w[0][i] = x;
+
 
             // RK1 para K
             k1_1 = h * u2[i - 1];
 
             k1_2 = h * (u2[i - 1] * (*f[0])(x) + u1[i - 1] * (*f[1])(x) + (*f[2])(x));
-            cout << "test" << endl;
             // RK2
             k2_1 = h * (u2[i - 1] + 0.5 * k1_2);
             k2_2 = h * ((*f[0])(x + 0.5 * h) * (u2[i - 1] + 0.5 * k1_2) + (*f[1])(x + 0.5 * h) * (u1[i - 1] + 0.5 * k1_1) + (*f[2])(x + 0.5 * h));
@@ -69,13 +72,12 @@ double **LinearShooting::solutions()
 
         }
 
-    
         w1 = alpha;
         w2 = (beta - u1[N]) / v1[N];
 
         for (int i = 1; i < N+1; i++)
         {
-            w[i][1] = u1[i] + w2 * v1[i];
+            w[1][i] = u1[i] + w2 * v1[i];
         }
 
         return w;

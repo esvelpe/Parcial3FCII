@@ -53,7 +53,7 @@ int main()
     cout << "# x" << setw(8) << "y" << endl;
     for (int i = 0; i < 11; i++)
     {
-        cout << w[i][0] << setw(8) << w[i][1] << endl;
+        cout << w[0][i] << setw(8) << w[1][i] << endl;
     }
     return 0;
 }
