@@ -4,24 +4,26 @@
 
 using namespace std;
 
-class LinearShooting{
-    public:
-    
-    LinearShooting(double , double , double , double , unsigned int , double (**)(double));
+class LinearShooting
+{
+public:
+    LinearShooting(double, double, double, double, unsigned int, double (**)(double));
     ~LinearShooting();
-    double ** solutions();
+    double **solutions();
 
-    private:
-
+private:
     double x{0};
     double a{0}, b{0}, alpha{0}, beta{0};
-    unsigned int N{0}; double h{0};
-    
-    double w1{0}, w2{0};
-    double ** w; 
+    unsigned int N{0};
+    double h{0};
 
-    double *u1 = NULL; double *u2 = NULL;
-    double *v1 = NULL; double *v2 = NULL;
+    double w1{0}, w2{0};
+    double **w;
+
+    vector<double> *u1 = NULL;
+    vector<double> *u2 = NULL;
+    vector<double> *v1 = NULL;
+    vector<double> *v2 = NULL;
 
     double (*f[3])(double);
 
