@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-//#include "LinearShooting.cpp"
-#include "LinearShootingClass.h"
+// #include "LinearShooting.cpp"
+#include "ShootingClass.h"
 using namespace std;
 
 double p(double x)
@@ -41,19 +41,38 @@ double r(double x)
     }
 }
 
+double fun(double x, double y, double yp)
+{
+    return (32.0 + 2.0 * pow(x, 3) - y * yp) / 8.0;
+}
+
+double fy(double x, double y, double yp)
+{
+    return -yp / 8.0;
+}
+
+double fyp(double x, double y, double yp)
+{
+    return -y / 8.0;
+}
+
 int main()
 {
-    double (*f[3])(double) = {p, q, r};
-    //double w[11][2];
-    //LinearShooting(1.0, 2.0, 1.0, 2.0, 10, f, w);
-    
-    LinearShooting EDOb(1.0, 2.0, 1.0, 2.0, 10, f);
-    double **w = EDOb.solutions();
-    
-    cout << "# x" << setw(8) << "y" << endl;
-    for (int i = 0; i < 11; i++)
+    // double (*f[3])(double) = {p, q, r};
+    //  double w[11][2];
+    //  LinearShooting(1.0, 2.0, 1.0, 2.0, 10, f, w);
+    double (*f_no[3])(double, double, double) = {fun, fy, fyp};
+
+    // Shooting EDOb(1.0, 2.0, 1.0, 2.0, 10, f);
+    // double **w = EDOb.linear_solutions();
+
+    Shooting EDO_No_Lin(1.0, 3.0, 17.0, 43.0 / 3.0, 20, f_no, pow(10, -5), 10);
+    double **w_no_lin = EDO_No_Lin.no_linear_solutions();
+
+    cout << "# x" << setw(12) << "y" << endl;
+    for (int i = 0; i < 20; i++)
     {
-        cout << w[0][i] << setw(8) << w[1][i] << endl;
+        cout << w_no_lin[0][i] << setw(12) << w_no_lin[1][i] << endl;
     }
     return 0;
 }

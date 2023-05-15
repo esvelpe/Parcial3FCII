@@ -1,5 +1,7 @@
 #include "ShootingClass.h"
 #include <vector>
+#include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,7 +44,10 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     this->TOL = TOL;
     this->N_max = N_max;
     this->TK = (beta - alpha) / (b - a);
-    *f_no_lineal = *g;
+    //*f_no_lineal = *g;
+    f_no_lineal[0] = g[0];
+    f_no_lineal[1] = g[1];
+    f_no_lineal[2] = g[2];
 
     w = new double *[2];
     w[0] = new double[N + 1];
@@ -52,25 +57,24 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     // v1[N] = {0.0};
     // v2[N] = {1.0};
     u1 = new vector<double>(N);
-    u1->push_back(alpha);
+    u1->at(0) = alpha;
     u2 = new vector<double>(N);
-    u2->push_back(0.0);
-    v1 = new vector<double>(N);
-    v1->push_back(0.0);
-    v2 = new vector<double>(N);
-    v2->push_back(1.0);
+    u2->at(0) = 0.0;
+    w1 = 0.0;
+    w2 = 1.0;
+    // v1 = new vector<double>(N);
+    // v1->push_back(0.0);
+    // v2 = new vector<double>(N);
+    // v2->push_back(1.0);
 }
 
 double **Shooting::linear_solutions()
 {
 
-    w[0][0] = a;
-    w[0][1] = alpha;
-
     for (int i = 1; i < N + 1; i++)
     {
         x = a + i * h;
-        w[i][0] = x;
+        w[0][i] = x;
 
         // RK1 para K
         k1_1 = h * u2->at(i - 1);
@@ -123,11 +127,56 @@ double **Shooting::no_linear_solutions()
     int k = 1;
     while (k <= N_max)
     {
+        u1->at(0) = alpha;
         u2->at(0) = TK;
-        for (int i = 1; i < N + 1; i++)
+        w1 = 0.0;
+        w2 = 1.0;
+        for (int i = 1; i < N; i++)
         {
-            x = a + (i - 1) * h;
-            w[i - 1][0] = x;
+            x = a + (i)*h;
+            w[0][i] = x;
+
+            k1_1 = h * u2->at(i - 1);
+            k1_2 = h * (*f_no_lineal[0])(x, u1->at(i - 1), u2->at(i - 1));
+            k2_1 = h * (u2->at(i - 1) + 0.5 * k1_2);
+            k2_2 = h * (*f_no_lineal[0])(x + 0.5 * h, u1->at(i - 1) + 0.5 * k1_1, u2->at(i - 1) + 0.5 * k1_2);
+            k3_1 = h * (u2->at(i - 1) + 0.5 * k2_2);
+            k3_2 = h * (*f_no_lineal[0])(x + 0.5 * h, u1->at(i - 1) + 0.5 * k2_1, u2->at(i - 1) + 0.5 * k2_2);
+            k4_1 = h * (u2->at(i - 1) + k3_2);
+            k4_2 = h * (*f_no_lineal[0])(x + 0.5 * h, u1->at(i - 1) + k3_1, u2->at(i - 1) + k3_2);
+
+            u1->at(i) = u1->at(i - 1) + (k1_1 + 2.0 * k2_1 + 2.0 * k3_1 + k4_1) / 6.0;
+            u2->at(i) = u2->at(i - 1) + (k1_2 + 2.0 * k2_2 + 2.0 * k3_2 + k4_2) / 6.0;
+
+            kp1_1 = h * w2;
+            kp1_2 = h * ((*f_no_lineal[1])(x, u1->at(i - 1), u2->at(i - 1)) * w1 + (*f_no_lineal[2])(x, u1->at(i - 1), u2->at(i - 1)) * w2);
+            kp2_1 = h * (w2 + 0.5 * kp1_2);
+            kp2_2 = h * ((*f_no_lineal[1])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w1 + 0.5 * kp1_1) + (*f_no_lineal[2])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w2 + 0.5 * kp1_2));
+            kp3_1 = h * (w2 + 0.5 * kp2_2);
+            kp3_2 = h * ((*f_no_lineal[1])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w1 + 0.5 * kp2_1) + (*f_no_lineal[2])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w2 + 0.5 * kp2_2));
+            kp4_1 = h * (w2 + kp3_2);
+            kp4_2 = h * ((*f_no_lineal[1])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w1 + kp3_1) + (*f_no_lineal[2])(x + 0.5 * h, u1->at(i - 1), u2->at(i - 1)) * (w2 + kp3_2));
+            w1 += (kp1_1 + 2.0 * kp2_1 + 2.0 * kp3_1 + kp4_1) / 6.0;
+            w2 += (kp1_2 + 2.0 * kp2_2 + 2.0 * kp3_2 + kp4_2) / 6.0;
         }
+        cout << "u10" << u1->at(0) << endl;
+        cout << "u1N" << u1->at(N - 1) << endl;
+
+        if (abs(u1->at(N - 1) - beta) <= TOL)
+        {
+            cout << "Entra al segundo for" << endl;
+            for (int i = 0; i < N; i++)
+            {
+                w[1][i] = u1->at(i);
+            }
+            return w;
+            break;
+        }
+
+        TK = TK - (u1->at(N - 1) - beta) / w1;
+        cout << "TK " << setprecision(8) << TK << endl;
+        k++;
     }
+    cout << "Se excedió el número máximo de iteraciones" << endl;
+    return w;
 }

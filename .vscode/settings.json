@@ -1,7 +1,8 @@
 {
   "files.associations": {
     "iostream": "cpp",
-    "graph.C": "cpp"
+    "graph.C": "cpp",
+    "ostream": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled"
 }
