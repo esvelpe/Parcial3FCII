@@ -66,11 +66,11 @@ int main()
     // Shooting EDOb(1.0, 2.0, 1.0, 2.0, 10, f);
     // double **w = EDOb.linear_solutions();
 
-    Shooting EDO_No_Lin(1.0, 3.0, 17.0, 43.0 / 3.0, 20, f_no, pow(10, -5), 10);
+    Shooting EDO_No_Lin(1.0, 3.0, 17.0, 43.0 / 3.0, 20, f_no, 1e-5, 10);
     double **w_no_lin = EDO_No_Lin.no_linear_solutions();
 
     cout << "# x" << setw(12) << "y" << endl;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 21; i++)
     {
         cout << w_no_lin[0][i] << setw(12) << w_no_lin[1][i] << endl;
     }

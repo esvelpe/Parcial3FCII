@@ -56,9 +56,9 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     // u2[N] = {TK};
     // v1[N] = {0.0};
     // v2[N] = {1.0};
-    u1 = new vector<double>(N);
+    u1 = new vector<double>(N+1);
     u1->at(0) = alpha;
-    u2 = new vector<double>(N);
+    u2 = new vector<double>(N+1);
     u2->at(0) = 0.0;
     w1 = 0.0;
     w2 = 1.0;
@@ -131,7 +131,9 @@ double **Shooting::no_linear_solutions()
         u2->at(0) = TK;
         w1 = 0.0;
         w2 = 1.0;
-        for (int i = 1; i < N; i++)
+
+        w[0][0] = a;
+        for (int i = 1; i < N+1; i++)
         {
             x = a + (i)*h;
             w[0][i] = x;
@@ -159,13 +161,10 @@ double **Shooting::no_linear_solutions()
             w1 += (kp1_1 + 2.0 * kp2_1 + 2.0 * kp3_1 + kp4_1) / 6.0;
             w2 += (kp1_2 + 2.0 * kp2_2 + 2.0 * kp3_2 + kp4_2) / 6.0;
         }
-        cout << "u10" << u1->at(0) << endl;
-        cout << "u1N" << u1->at(N - 1) << endl;
 
-        if (abs(u1->at(N - 1) - beta) <= TOL)
+        if (abs(u1->at(N) - beta) <= TOL)
         {
-            cout << "Entra al segundo for" << endl;
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < N+1; i++)
             {
                 w[1][i] = u1->at(i);
             }
@@ -173,8 +172,7 @@ double **Shooting::no_linear_solutions()
             break;
         }
 
-        TK = TK - (u1->at(N - 1) - beta) / w1;
-        cout << "TK " << setprecision(8) << TK << endl;
+        TK = TK - (u1->at(N) - beta) / w1;
         k++;
     }
     cout << "Se excedió el número máximo de iteraciones" << endl;
