@@ -14,23 +14,27 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     this->beta = beta;
     this->N = N;
     this->h = (b - a) / (double)N;
-    *f_lineal = *g;
+    f_lineal[0] = g[0];
+    f_lineal[1] = g[1];
+    f_lineal[2] = g[2];
 
     w = new double *[2];
     w[0] = new double[N + 1];
     w[1] = new double[N + 1]; // Inicializa cada una de las columnas con un array de N+1 entradas
+    this->w1 = 0.0;
+    this->w2 = 0.0;
     // u1[N] = {alpha};
     // u2[N] = {0.0};
     // v1[N] = {0.0};
     // v2[N] = {1.0};
-    u1 = new vector<double>(N);
-    u1->push_back(alpha);
-    u2 = new vector<double>(N);
-    u2->push_back(0.0);
-    v1 = new vector<double>(N);
-    v1->push_back(0.0);
-    v2 = new vector<double>(N);
-    v2->push_back(1.0);
+    u1 = new vector<double>(N+1);
+    u1->at(0) = alpha;
+    u2 = new vector<double>(N+1);
+    u2->at(0) = 0.0;
+    v1 = new vector<double>(N+1);
+    v1->at(0) = 0.0;
+    v2 = new vector<double>(N+1);
+    v2->at(0) = 1.0;
 }
 
 Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N, double (*g[3])(double, double, double), double TOL, int N_max)
@@ -113,10 +117,10 @@ double **Shooting::linear_solutions()
 
     w1 = alpha;
     w2 = (beta - u1->at(N)) / v1->at(N);
-
-    for (int i = 1; i < N + 1; i++)
+    w[0][0] = a;
+    for (int i = 0; i < N + 1; i++)
     {
-        w[i][1] = u1->at(i) + w2 * v1->at(i);
+        w[1][i] = u1->at(i) + w2 * v1->at(i);
     }
 
     return w;

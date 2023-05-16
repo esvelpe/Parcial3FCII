@@ -43,17 +43,17 @@ double r(double x)
 
 double fun(double x, double y, double yp)
 {
-    return 2*y*y*y;
+    return -yp*yp - y + log(x);
 }
 
 double fy(double x, double y, double yp)
 {
-    return 6*y*y;
+    return -1;
 }
 
 double fyp(double x, double y, double yp)
 {
-    return 0;
+    return -2*yp;
 }
 
 int main()
@@ -66,7 +66,7 @@ int main()
     // Shooting EDOb(1.0, 2.0, 1.0, 2.0, 10, f);
     // double **w = EDOb.linear_solutions();
 
-    Shooting EDO_No_Lin(-1.0, 0.0, 0.5, 0.33333333, 20, f_no, 1e-5, 10);
+    Shooting EDO_No_Lin(1, 2, 0.0, log(2), 20, f_no, 1e-5, 10);
     double **w_no_lin = EDO_No_Lin.no_linear_solutions();
 
     cout << "# x" << setw(12) << "y" << endl;
