@@ -11,6 +11,27 @@ public:
     Shooting(double, double, double, double, unsigned int, double (**)(double, double, double), double, int);
     double **linear_solutions();
     double **no_linear_solutions();
+    void setX(double);
+    double getX() const;
+    void setA(double);
+    double getA() const;
+    void setB(double);
+    double getB() const;
+    void setAlpha(double);
+    double getAlpha() const;
+    void setBeta(double);
+    double getBeta() const;
+    void setN(unsigned int);
+    unsigned int getN() const;
+    void setH();
+    double getH() const;
+    void setTOL(double);
+    double getTOL() const;
+    void setN_max(unsigned int);
+    unsigned int getN_max() const;
+    void setTK();
+    double getTK() const;
+    void printTable(const vector<double> &) const;
 
 private:
     double x{0};

@@ -14,26 +14,25 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     this->beta = beta;
     this->N = N;
     this->h = (b - a) / (double)N;
-    f_lineal[0] = g[0];
-    f_lineal[1] = g[1];
-    f_lineal[2] = g[2];
-
-    w = new double *[2];
-    w[0] = new double[N + 1];
-    w[1] = new double[N + 1]; // Inicializa cada una de las columnas con un array de N+1 entradas
+    this->f_lineal[0] = g[0];
+    this->f_lineal[1] = g[1];
+    this->f_lineal[2] = g[2];
     this->w1 = 0.0;
     this->w2 = 0.0;
-    // u1[N] = {alpha};
-    // u2[N] = {0.0};
-    // v1[N] = {0.0};
-    // v2[N] = {1.0};
-    u1 = new vector<double>(N+1);
+
+    // Inicializa la matriz de la solución
+    w = new double *[2];
+    // Inicializa cada una de las columnas con un array de N+1 entradas
+    w[0] = new double[N + 1];
+    w[1] = new double[N + 1];
+
+    u1 = new vector<double>(N + 1);
     u1->at(0) = alpha;
-    u2 = new vector<double>(N+1);
+    u2 = new vector<double>(N + 1);
     u2->at(0) = 0.0;
-    v1 = new vector<double>(N+1);
+    v1 = new vector<double>(N + 1);
     v1->at(0) = 0.0;
-    v2 = new vector<double>(N+1);
+    v2 = new vector<double>(N + 1);
     v2->at(0) = 1.0;
 }
 
@@ -48,28 +47,21 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     this->TOL = TOL;
     this->N_max = N_max;
     this->TK = (beta - alpha) / (b - a);
-    //*f_no_lineal = *g;
-    f_no_lineal[0] = g[0];
-    f_no_lineal[1] = g[1];
-    f_no_lineal[2] = g[2];
+    this->f_no_lineal[0] = g[0];
+    this->f_no_lineal[1] = g[1];
+    this->f_no_lineal[2] = g[2];
 
     w = new double *[2];
+    // Inicializa cada una de las columnas con un array de N+1 entradas
     w[0] = new double[N + 1];
-    w[1] = new double[N + 1]; // Inicializa cada una de las columnas con un array de N+1 entradas
-    // u1[N] = {alpha};
-    // u2[N] = {TK};
-    // v1[N] = {0.0};
-    // v2[N] = {1.0};
-    u1 = new vector<double>(N+1);
+    w[1] = new double[N + 1];
+
+    u1 = new vector<double>(N + 1);
     u1->at(0) = alpha;
-    u2 = new vector<double>(N+1);
+    u2 = new vector<double>(N + 1);
     u2->at(0) = 0.0;
-    w1 = 0.0;
-    w2 = 1.0;
-    // v1 = new vector<double>(N);
-    // v1->push_back(0.0);
-    // v2 = new vector<double>(N);
-    // v2->push_back(1.0);
+    this->w1 = 0.0;
+    this->w2 = 1.0;
 }
 
 double **Shooting::linear_solutions()
@@ -137,7 +129,7 @@ double **Shooting::no_linear_solutions()
         w2 = 1.0;
 
         w[0][0] = a;
-        for (int i = 1; i < N+1; i++)
+        for (int i = 1; i < N + 1; i++)
         {
             x = a + (i)*h;
             w[0][i] = x;
@@ -168,7 +160,7 @@ double **Shooting::no_linear_solutions()
 
         if (abs(u1->at(N) - beta) <= TOL)
         {
-            for (int i = 0; i < N+1; i++)
+            for (int i = 0; i < N + 1; i++)
             {
                 w[1][i] = u1->at(i);
             }
@@ -182,3 +174,92 @@ double **Shooting::no_linear_solutions()
     cout << "Se excedió el número máximo de iteraciones" << endl;
     return w;
 }
+
+void Shooting::setX(double x)
+{
+    this->x = x;
+};
+double Shooting::getX() const
+{
+    return this->x;
+};
+void Shooting::setA(double a)
+{
+    this->a = a;
+};
+double Shooting::getA() const
+{
+    return this->a;
+};
+void Shooting::setB(double b)
+{
+    this->b = b;
+};
+double Shooting::getB() const
+{
+    return this->b;
+};
+void Shooting::setAlpha(double alpha)
+{
+    this->alpha = alpha;
+};
+double Shooting::getAlpha() const
+{
+    return this->alpha;
+};
+void Shooting::setBeta(double beta)
+{
+    this->beta = beta;
+};
+double Shooting::getBeta() const
+{
+    return this->beta;
+};
+void Shooting::setN(unsigned int N)
+{
+    this->N = N;
+};
+unsigned int Shooting::getN() const
+{
+    return this->N;
+};
+void Shooting::setH()
+{
+    this->h = (getB() - getA()) / (double)getN();
+};
+double Shooting::getH() const
+{
+    return this->h;
+};
+void Shooting::setTOL(double TOL)
+{
+    this->TOL = TOL;
+};
+double Shooting::getTOL() const
+{
+    return this->TOL;
+};
+void Shooting::setN_max(unsigned int N_max)
+{
+    this->N_max = N_max;
+};
+unsigned int Shooting::getN_max() const
+{
+    return this->N_max;
+};
+void Shooting::setTK()
+{
+    this->TK = (getBeta() - getAlpha()) / (getB() - getA());
+};
+double Shooting::getTK() const
+{
+    return this->TK;
+};
+void Shooting::printTable(const vector<double> &vector) const
+{
+    cout << "x_i" << setw(15) << "w(x_i)" << setw(15) << "y(x_i)" << setw(25) << "|w(x_i)-y(x_i)|" << endl;
+    for (int i = 0; i < getN(); i++)
+    {
+        cout << this->w[0][i] << setw(15) << this->w[1][i] << setw(15) << vector.at(i) << setw(25) << abs(this->w[1][i] - vector.at(i)) << endl;
+    }
+};
