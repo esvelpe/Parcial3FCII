@@ -64,6 +64,10 @@ Shooting::Shooting(double a, double b, double alpha, double beta, unsigned int N
     this->w2 = 1.0;
 }
 
+Shooting::~Shooting(){
+	delete [] w;
+}
+
 double **Shooting::linear_solutions()
 {
 

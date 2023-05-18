@@ -9,6 +9,7 @@ class Shooting
 public:
     Shooting(double, double, double, double, unsigned int, double (**)(double));
     Shooting(double, double, double, double, unsigned int, double (**)(double, double, double), double, int);
+    ~Shooting();
     double **linear_solutions();
     double **no_linear_solutions();
     void setX(double);
